@@ -3,6 +3,12 @@ import data from '../data';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 import logger from 'use-reducer-logger'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Product from '../components/Product';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
+
 const reducer=(state,action)=>{
    switch(action.type)
    {
@@ -39,23 +45,23 @@ function HomeScreen()
    },[])
      return (
         <div>
-                     <h1> List of featured products</h1>
-                     {loading?<div> Loading ....</div>:error?<div>{error.message}</div>:
-                     <div className="products">
+                     <h1 className='mb-5 mt-5'> List of featured products</h1>
+                     {loading?<LoadingBox></LoadingBox>:error?<MessageBox variant="danger">{error}</MessageBox>:
+                     (<div className="products">
+         
+         <Row>
+
+      
          {
-          products.map((product)=>(<div key={product.slug} className="product">
-          <Link to={`/product/${product.slug}`}><img src={product.image}></img> </Link>
-          
-          <div className="product-info">
-          <Link to={`/product/${product.slug}`}>${product.name}</Link>
-          
-          <p > <strong>${product.price} </strong></p>
-          <p > {product.brand}</p>
-          <button> Add to cart</button>
-          </div>
-          </div>))
-         }
-         </div>
+          products.map((product)=>(
+            <Col sm={6} md={4} lg={3} className="mb-3">
+            <Product product={product}></Product>
+           
+          </Col>))
+         }  
+         
+       </Row>
+         </div>)
       }
         
          

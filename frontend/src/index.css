@@ -6,18 +6,16 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-header{
-  background-color: #404040;
-  padding:1rem;
-  
-}
-
-header a{
-  color:white;
+.site-container
+{
+  min-height:100vh;
 }
 main{
-  padding: 1rem;
+  flex:1;
+}
+.rate {
+  color:#ffc000;
+  
 }
 .products
 {
@@ -26,15 +24,15 @@ main{
   flex-wrap: wrap;
   gap:20px;
 }
-.product{
-  border: 1px #404040 solid;
-  
-}
 .product img{
   width:240px;
-  height:350px;
+  height:300px;
   max-width: 400px;
   width:100%
+}
+.img-large
+{
+  max-width:100%;
 }
 .product-info
 {
