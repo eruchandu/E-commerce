@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState,useReducer } from 'react';
+import { Navigate, useParams } from "react-router-dom";
+import { useEffect, useState,useReducer, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios'
 import logger from 'use-reducer-logger'
@@ -12,6 +12,8 @@ import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/esm/Button";
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { Store } from "../Store.js";
+import { useNavigate } from "react-router-dom";
 
 const reducer=(state,action)=>{
   switch(action.type)
@@ -26,12 +28,14 @@ const reducer=(state,action)=>{
         return state; 
    }
 };
-
+ 
 function ProductScreen()
 {
   const param=useParams();
   const {slug}=param;
+  const navigate=useNavigate();
   const[{loading,error,product},dispatch]=useReducer(reducer,{loading:true,error:'',products:[] });
+  
    useEffect(()=>
    {
    const fetchData=async()=>
@@ -49,7 +53,24 @@ function ProductScreen()
    }; 
    fetchData();
    },[slug])
-    
+   
+   const {state,dispatch:ctxDispatch}=useContext(Store);
+   const {cart}=state;
+   const addToCartHandler=async()=>
+   {
+
+      const existItem=cart.cartItems.find((x)=>x._id===product._id)
+      const quantity=existItem?existItem.quantity+1:1;
+      const {data}=await axios.get(`/product/${product._id}`)
+      if(data.countInStock<quantity)
+      {
+        window.alert("Sorry The stock is Limited ");
+        return ;
+      }
+      ctxDispatch({type:'CART_ADD_ITEM',payload:{...product,quantity}});
+      
+  navigate("/cart");
+   }
   return(
     <div>
      {loading?<LoadingBox></LoadingBox>:error?<MessageBox variant="danger">{error}</MessageBox>:<div>
@@ -84,7 +105,7 @@ function ProductScreen()
           </ListGroup.Item>
           
           
-            <Button className="btn btn-warning btn-outline-dark  my-3"> Add to Cart</Button>
+            <Button className="btn btn-warning btn-outline-dark  my-3" onClick={addToCartHandler}> Add to Cart</Button>
           
         </ListGroup>
 

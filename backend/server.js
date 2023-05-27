@@ -19,7 +19,19 @@ app.get("/product/slug/:slug",(req,res)=>
         res.send(product);
     }
     else{
-        res.status(404).send({message:'Product Not Found '});
+        res.status(404).send({message:'Product Not Found'});
+    }
+
+})
+app.get("/product/:id",(req,res)=>
+{  
+    const product=data.products.find(x=>x._id==req.params.id);
+    if(product)
+    {
+        res.send(product);
+    }
+    else{
+        res.status(404).send({message:'Product Not Found'});
     }
 
 })
